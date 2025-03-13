@@ -10,7 +10,12 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name      = var.resource_group_name
   location                 = var.location
   sku                      = "Basic"  # Opción económica para pruebas
-  admin_enabled            = true  # Activamos el acceso de administrador para facilitar la autenticación en el ejercicio
+  admin_enabled            = true  # Activamos el acceso de administrador para facilitar la autenticación
+
+  tags = {
+    environment = "casopractico2"
+  }
+
 }
 
 # --------------------------------------------

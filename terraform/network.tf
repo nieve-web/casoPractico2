@@ -11,6 +11,10 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = var.resource_group_name
   address_space       = ["10.0.0.0/16"]
 
+  tags = {
+    environment = "casopractico2"
+  }
+
   depends_on = [ azurerm_resource_group.rg ]
 }
 
@@ -31,6 +35,10 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "nievecp2_nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
+
+  tags = {
+    environment = "casopractico2"
+  }
 
   depends_on = [ azurerm_resource_group.rg ]
 }

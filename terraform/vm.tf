@@ -10,6 +10,8 @@ resource "azurerm_public_ip" "vm_public_ip" {
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 # --------------------------------------------
@@ -84,5 +86,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
   admin_ssh_key {
     username   = "azureuser"
     public_key = tls_private_key.ssh_key.public_key_openssh
+  }
+
+  tags = {
+    environment = "casopractico2"
   }
 }
