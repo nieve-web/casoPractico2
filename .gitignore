@@ -1,0 +1,8 @@
+# Ignorar dependencias de Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+terraform/.terraform.lock.hcl
+terraform/id_rsa
+ansible/secrets.yml
+ansible/{changed*

@@ -1,0 +1,8 @@
+app_namespace: "mi-aplicacion"  # Namespace donde se despliega en AKS
+
+app:
+  backend:
+    name: "mi-backend"  # Nombre de la aplicación
+    image: "nginx:latest"  # Imagen del contenedor (ajústala si usas una propia en ACR)
+    replicas: 2  # Cantidad de réplicas de la aplicación
+    port: 80  # Puerto donde escucha la aplicación

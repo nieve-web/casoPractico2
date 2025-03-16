@@ -1,0 +1,38 @@
+---
+- name: Asegurar que los paquetes están actualizados
+  become: yes
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Instalar Podman en la VM
+  become: yes
+  ansible.builtin.apt:
+    name: podman
+    state: present
+
+- name: Verificar instalación de Podman
+  ansible.builtin.command: podman --version
+  register: podman_version
+
+- name: Mostrar versión de Podman instalada
+  ansible.builtin.debug:
+    msg: "Podman instalado correctamente: {{ podman_version.stdout }}"
+
+- name: Iniciar sesión en ACR
+  containers.podman.podman_login:
+    registry: "{{ acr_name }}.azurecr.io"
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+
+- name: Descargar imagen desde ACR
+  containers.podman.podman_image:
+    name: "{{ acr_name }}.azurecr.io/nginx:latest"
+    source: pull
+
+- name: Ejecutar contenedor nginx
+  containers.podman.podman_container:
+    name: webserver
+    image: "{{ acr_name }}.azurecr.io/nginx:latest"
+    state: started
+    ports:
+      - "80:80"

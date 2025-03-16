@@ -1,0 +1,38 @@
+---
+- name: Login en Azure Container Registry (ACR)
+  containers.podman.podman_login:
+    registry: "{{ acr_login_server }}"
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+
+- name: Descargar imágenes desde Docker Hub
+  containers.podman.podman_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag | default('latest') }}"
+    state: present
+    pull: yes
+  loop:
+    - { name: "docker.io/nginx" }
+    - { name: "mcr.microsoft.com/oss/bitnami/redis", tag: "6.0.8" }
+    - { name: "mcr.microsoft.com/azuredocs/azure-vote-front", tag: "v1" }
+
+- name: Etiquetar imágenes para ACR
+  containers.podman.podman_image:
+    name: "{{ item.name }}"
+    tag: "{{ item.tag | default('latest') }}"
+    repository: "{{ acr_name }}/{{ item.path }}/{{ item.name }}"
+    push: no
+  loop:
+    - { path: "nginx", name: "nginx" }
+    - { path: "redis", name: "redis" }
+    - { path: "front", name: "azure-vote-front" }
+
+- name: Subir imágenes a ACR
+  containers.podman.podman_image:
+    name: "{{ acr_name }}/{{ item.path }}/{{ item.name }}"
+    tag: "casopractico2"
+    push: yes
+  loop:
+    - { path: "nginx", name: "nginx" }
+    - { path: "redis", name: "redis" }
+    - { path: "front", name: "azure-vote-front" }
