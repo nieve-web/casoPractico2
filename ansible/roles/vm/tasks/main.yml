@@ -20,19 +20,19 @@
 
 - name: Iniciar sesión en ACR
   containers.podman.podman_login:
-    registry: "{{ acr_name }}.azurecr.io"
+    registry: "{{ acr_login_server }}"
     username: "{{ acr_username }}"
     password: "{{ acr_password }}"
 
 - name: Descargar imagen desde ACR
   containers.podman.podman_image:
-    name: "{{ acr_name }}.azurecr.io/nginx:latest"
-    source: pull
+    name: "{{ acr_login_server }}/nginx:latest"
+    pull: yes
 
 - name: Ejecutar contenedor nginx
   containers.podman.podman_container:
     name: webserver
-    image: "{{ acr_name }}.azurecr.io/nginx:latest"
+    image: "{{ acr_login_server }}/nginx:latest"
     state: started
     ports:
-      - "80:80"
+      - "8080:80"

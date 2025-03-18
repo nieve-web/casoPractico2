@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: "{{ acr_name }}/redis/redis:casopractico2"
+          image: "{{ acr_login_server }}/redis:6.0.8"
           ports:
             - containerPort: 6379
           env:

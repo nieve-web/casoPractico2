@@ -1,38 +1,53 @@
 ---
-- name: Login en Azure Container Registry (ACR)
+# Tareas que se ejecutan en el rol acr
+
+- name: Asegurarse de que Podman esté instalado
+  become: true
+  ansible.builtin.apt:
+    name: podman
+    update_cache: yes
+    state: present
+
+- name: Login en el Azure Container Registry (ACR)
   containers.podman.podman_login:
     registry: "{{ acr_login_server }}"
     username: "{{ acr_username }}"
     password: "{{ acr_password }}"
 
-- name: Descargar imágenes desde Docker Hub
+# Descargar imágenes desde Docker Hub (repositorio público)
+- name: Descargar imagen de Nginx
   containers.podman.podman_image:
-    name: "{{ item.name }}"
-    tag: "{{ item.tag | default('latest') }}"
-    state: present
+    name: "docker.io/nginx"
     pull: yes
-  loop:
-    - { name: "docker.io/nginx" }
-    - { name: "mcr.microsoft.com/oss/bitnami/redis", tag: "6.0.8" }
-    - { name: "mcr.microsoft.com/azuredocs/azure-vote-front", tag: "v1" }
 
-- name: Etiquetar imágenes para ACR
+- name: Descargar imagen de Redis
   containers.podman.podman_image:
-    name: "{{ item.name }}"
-    tag: "{{ item.tag | default('latest') }}"
-    repository: "{{ acr_name }}/{{ item.path }}/{{ item.name }}"
-    push: no
-  loop:
-    - { path: "nginx", name: "nginx" }
-    - { path: "redis", name: "redis" }
-    - { path: "front", name: "azure-vote-front" }
+    name: "mcr.microsoft.com/oss/bitnami/redis"
+    tag: "6.0.8"
+    pull: yes
 
-- name: Subir imágenes a ACR
+- name: Descargar imagen de Azure-vote-front
   containers.podman.podman_image:
-    name: "{{ acr_name }}/{{ item.path }}/{{ item.name }}"
-    tag: "casopractico2"
+    name: "docker.io/fernandezsalazarnieve/azure-vote-front"
+    tag: "v1"
+    pull: yes
+
+# Etiquetar y hacer push de las imágenes directamente al ACR
+- name: Etiquetar y subir la imagen de Nginx a ACR
+  containers.podman.podman_image:
+    name: "{{ acr_login_server }}/nginx"
+    tag: "latest"
     push: yes
-  loop:
-    - { path: "nginx", name: "nginx" }
-    - { path: "redis", name: "redis" }
-    - { path: "front", name: "azure-vote-front" }
+
+- name: Etiquetar y subir la imagen de Redis a ACR
+  containers.podman.podman_image:
+    name: "{{ acr_login_server }}/redis"
+    tag: "6.0.8"
+    push: yes
+
+- name: Etiquetar y subir la imagen de Azure-vote-front a ACR
+  containers.podman.podman_image:
+    name: "{{ acr_login_server }}/azure-vote-front"
+    tag: "latest"
+    push: yes
+

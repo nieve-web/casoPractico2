@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: azure-vote-front
-          image: "{{ acr_name }}/front/azure-vote-front:casopractico2"
+          image: "{{ acr_login_server }}/azure-vote-front:latest"
           ports:
             - containerPort: 80
           env:
