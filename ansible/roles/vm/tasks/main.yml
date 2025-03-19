@@ -34,5 +34,7 @@
     name: webserver
     image: "{{ acr_login_server }}/nginx:latest"
     state: started
+    restart_policy: always
+    detach: true
     ports:
       - "8080:80"

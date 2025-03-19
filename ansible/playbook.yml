@@ -4,9 +4,16 @@
   vars_files:
     - secrets.yml
   vars:
-    acr_name: "nievecp2acr"
-    acr_username: "nievecp2acr" 
-    acr_login_server: "nievecp2acr.azurecr.io"
+    acr_name: "nievecp2acr"  # Nombre del Azure Container Registry
+    acr_username: "nievecp2acr"  # Usuario para el ACR
+    acr_login_server: "nievecp2acr.azurecr.io"  # Servidor del ACR
+    app_namespace: "default"  # Namespace para las aplicaciones en Kubernetes
+    app:
+      backend:
+        name: "redis-backend"  # Nombre de la aplicación backend (puede ser el nombre de tu imagen)
+        image: "{{ acr_login_server }}/redis:6.0.8" # Imagen del backend
+        port: 6379  # Puerto en el que el backend escucha (para Redis es 6379)
+        replicas: 2  # Número de réplicas del backend
   tasks:
     - name: Pull, build, tag and push images to ACR
       include_role:
@@ -25,8 +32,6 @@
   hosts: localhost
   vars_files:
     - secrets.yml
-  vars:
-    acr_name: "nievecp2acr.azurecr.io" 
   tasks:
     - name: Deploy app to AKS
       include_role:

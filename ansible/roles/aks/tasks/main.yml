@@ -1,7 +1,7 @@
 ---
 - name: Configurar conexión con AKS
   set_fact:
-    kube_config: "/home/azureuser/.kube/config"
+    kube_config: "/home/nefr/.kube/config"
 
 - name: Desplegar Redis en AKS
   kubernetes.core.k8s:
