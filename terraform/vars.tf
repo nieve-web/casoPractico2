@@ -74,7 +74,7 @@ variable "aks_name" {
 variable "aks_node_count" {
   description = "Número de nodos en el clúster de AKS"
   type        = number
-  default     = 1  # Puedes aumentar el número si necesitas más nodos
+  default     = 1
 }
 
 variable "aks_vm_size" {
@@ -94,9 +94,6 @@ variable "aks_dns_prefix" {
 # --------------------------------------------
 
 # ID único de la suscripción de Azure donde se desplegarán los recursos.
-#    - Se puede obtener ejecutando el comando:
-#      az account show --query "id" --output tsv
-#    - Este valor debe ser proporcionado al ejecutar Terraform.
 variable "subscription_id" {
   description = "ID de la suscripción de Azure"
   type        = string
